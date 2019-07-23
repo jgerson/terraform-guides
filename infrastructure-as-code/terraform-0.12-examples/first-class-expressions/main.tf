@@ -37,6 +37,15 @@ resource "aws_network_interface" "foo" {
   }
 }
 
+resource "aws_network_interface" "bar" {
+  subnet_id = aws_subnet.my_subnet.id
+  private_ips = ["172.16.10.100"]
+  
+  tags = {
+    Name = "tf-0.12-fce-primary_network_interface"
+  }
+}
+
 data "aws_ami" "ubuntu_14_04" {
   most_recent      = true
 
