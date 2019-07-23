@@ -65,3 +65,100 @@ resource "aws_instance" "foo" {
 output "private_dns" {
   value = aws_instance.foo.private_dns
 }
+
+resource "aws_rds_cluster" "default" {
+  cluster_identifier      = "aurora-cluster-demo"
+  engine                  = "aurora-mysql"
+  engine_version          = "5.7.mysql_aurora.2.03.2"
+  availability_zones      = ["us-west-2a", "us-west-2b", "us-west-2c"]
+  database_name           = "mydb"
+  master_username         = "foo"
+  master_password         = "bar"
+  backup_retention_period = 5
+  preferred_backup_window = "07:00-09:00"
+}
+
+resource "aws_elasticache_cluster" "example" {
+  cluster_id           = "cluster-example"
+  engine               = "redis"
+  node_type            = "cache.m4.large"
+  num_cache_nodes      = 1
+  parameter_group_name = "default.redis3.2"
+  engine_version       = "3.2.10"
+  port                 = 6379
+}
+
+resource "aws_db_instance" "default" {
+  allocated_storage    = 20
+  storage_type         = "gp2"
+  engine               = "mysql"
+  engine_version       = "5.7"
+  instance_class       = "db.t2.micro"
+  name                 = "mydb"
+  username             = "foo"
+  password             = "foobarbaz"
+  parameter_group_name = "default.mysql5.7"
+}
+
+resource "aws_ebs_volume" "example" {
+  availability_zone = "us-west-2a"
+  size              = 40
+
+  tags = {
+    Name = "HelloWorld"
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "foobar" {
+  alarm_name                = "terraform-test-foobar5"
+  comparison_operator       = "GreaterThanOrEqualToThreshold"
+  evaluation_periods        = "2"
+  metric_name               = "CPUUtilization"
+  namespace                 = "AWS/EC2"
+  period                    = "120"
+  statistic                 = "Average"
+  threshold                 = "80"
+  alarm_description         = "This metric monitors ec2 cpu utilization"
+  insufficient_data_actions = []
+
+resource "aws_cloudwatch_dashboard" "main" {
+  dashboard_name = "my-dashboard"
+
+  dashboard_body = <<EOF
+ {
+   "widgets": [
+       {
+          "type":"metric",
+          "x":0,
+          "y":0,
+          "width":12,
+          "height":6,
+          "properties":{
+             "metrics":[
+                [
+                   "AWS/EC2",
+                   "CPUUtilization",
+                   "InstanceId",
+                   "i-012345"
+                ]
+             ],
+             "period":300,
+             "stat":"Average",
+             "region":"us-east-1",
+             "title":"EC2 Instance CPU"
+          }
+       },
+       {
+          "type":"text",
+          "x":0,
+          "y":7,
+          "width":3,
+          "height":3,
+          "properties":{
+             "markdown":"Hello world"
+          }
+       }
+   ]
+ }
+ EOF
+}
