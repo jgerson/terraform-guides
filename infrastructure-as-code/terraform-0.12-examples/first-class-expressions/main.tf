@@ -62,6 +62,20 @@ resource "aws_instance" "foo" {
   }
 }
 
+resource "aws_instance" "bar" {
+  ami = data.aws_ami.ubuntu_14_04.image_id
+  instance_type = "t2.micro"
+
+  tags = {
+    Name = "tf-0.12-fce-ec2-instance"
+  }
+
+  network_interface {
+    network_interface_id = aws_network_interface.bar.id
+    device_index = 0
+  }
+}
+
 output "private_dns" {
   value = aws_instance.foo.private_dns
 }
