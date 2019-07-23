@@ -60,7 +60,7 @@ data "aws_ami" "ubuntu_14_04" {
 resource "aws_instance" "foo" {
   ami = data.aws_ami.ubuntu_14_04.image_id
   instance_type = "t2.micro"
-
+  availability_zone = "us-west-2a" 
   tags = {
     Name = "tf-0.12-fce-ec2-instance"
   }
@@ -74,7 +74,7 @@ resource "aws_instance" "foo" {
 resource "aws_instance" "bar" {
   ami = data.aws_ami.ubuntu_14_04.image_id
   instance_type = "t2.micro"
-
+  availability_zone = "us-west-2a"
   tags = {
     Name = "tf-0.12-fce-ec2-instance"
   }
