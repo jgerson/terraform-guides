@@ -8,7 +8,7 @@ provider "aws" {
 
 variable "vpc_name" {
   description = "name of the VPC"
-  default = "tf-0.12-fce-example2"
+  default = "tf-0.12-fce-example"
 }
 
 resource "aws_vpc" "my_vpc" {
